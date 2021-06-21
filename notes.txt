@@ -1,0 +1,10 @@
+backend deps : {
+  express (server)
+  nodemon:
+  mongoose: conects to database
+  body-parser: parse data inside post req to server
+  shortid: library to creat user-friendly id for product
+
+}
+
+"mongodb://localhost/react-funwear-shop"
