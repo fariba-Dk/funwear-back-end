@@ -8,3 +8,6 @@ backend deps : {
 }
 
 "mongodb://localhost/react-funwear-shop"
+git remote add origin https://github.com/fariba-Dk/funwear-front-end.git
+
+git push -u origin main
