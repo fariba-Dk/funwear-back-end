@@ -1,14 +1,14 @@
-const express = require('express')
+const express = require('express');
 const mongoose = require('mongoose');
 const shortid = require('shortid');
 
-const app = express()
+const app = express();
 //middlewares
-app.use(express.json())
+app.use(express.json());
 
 //initialize mongo-db
 //2 params for connect func: url, 3 15multiple keys 12-
- mongoose.connect('mongodb://localhost/react-funwear-shop', {
+mongoose.connect('mongodb://localhost/react-funwear-shop', {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true,
@@ -16,9 +16,10 @@ app.use(express.json())
 
 // //product model -> the model w 2 params: name of the collection in the db 2. the list of fields of the model
 const Product = mongoose.model(
-  "products",
-  new mongoose.Schema({ //bunch of columns
-    _id: {type:String, default: shortid.generate},//we set default value
+  'products',
+  new mongoose.Schema({
+    //bunch of columns
+    _id: { type: String, default: shortid.generate }, //we set default value
     title: String,
     description: String,
     image: String,
@@ -28,18 +29,18 @@ const Product = mongoose.model(
 );
 
 //GET - method
-app.get("/api/products", async(req, res)=>{
+app.get('/api/products', async (req, res) => {
   //find is a promise so use async/await
-  const products = await Product.find({})
-  console.log(products)
-  res.send(products)
-})
+  const products = await Product.find({});
+  console.log(products);
+  res.send(products);
+});
 
 // //POST - method
-app.post("/api/products", async(req, res)=>{
-  const newProduct = await new Product(req.body).save()
-  res.send(newProduct)
-})
+app.post('/api/products', async (req, res) => {
+  const newProduct = await new Product(req.body).save();
+  res.send(newProduct);
+});
 
 // //UPDATE - method
 // app.put("/api/products/:id", async(req, res) =>{
@@ -48,15 +49,58 @@ app.post("/api/products", async(req, res)=>{
 // })
 
 //DELETE  using :id as placeholder
-app.delete("/api/products/:id", async (req, res) =>{
-  const deletedProduct = await Product.findByIdAndDelete(req.params.id)
-  res.send(deletedProduct)
-})
+app.delete('/api/products/:id', async (req, res) => {
+  const deletedProduct = await Product.findByIdAndDelete(req.params.id);
+  res.send(deletedProduct);
+});
 
+//~~~~~~~~ O R D E R   MODEL ~~~~~~~
 
+const Order = mongoose.model(
+  'order',
+  new mongoose.Schema(
+    {
+      _id: {
+        type: String,
+        default: shortid.generate,
+      },
+      email: String,
+      name: String,
+      address: String,
+      total: Number,
+      cartItems: [
+        {
+          // an array of each cartItem which are PRODUCT {}
+          _id: String,
+          title: String,
+          price: Number,
+          count: Number,
+        },
+      ],
+    },
+    {
+      timestamps: true, //allows to see time for update and place
+    }
+  )
+);
 
-const PORT = process.env.PORT || 5000
+app.post('/api/orders', async (req, res) => {
+  //insure that all required fields exists!!!
+  if (
+    !req.body.name ||
+    !req.body.email ||
+    !req.body.address ||
+    !req.body.cartItems ||
+    !req.body.total
+  ) {
+    return res.send({ message: 'Data is required' });
+  } else {
+    const newOrder = await Order(req.body).save();
+    res.send(newOrder);
+  }
+});
+
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log("Server at http://localhost:5000")
-})
-
+  console.log('Server at http://localhost:5000');
+});
