@@ -29,6 +29,17 @@ const Product = mongoose.model(
   })
 );
 
+async function seed() {
+  await new Product({
+    availableSizes: ['XS', 'M', 'S', 'L'],
+    image: '/images/shein10.webp',
+    title: 'Elegant sundress with ruched front',
+    description:
+      'This is for all the latest trends, no matter who you are, where you’re from and what you’re up to. Exclusive to ASOS, our universal brand is here for you, and comes in all our fit ranges: ASOS Curve, Tall, Petite and Maternity. Created by us, styled by you.',
+    price: 408.99,
+  }).save();
+}
+seed();
 //GET - method
 app.get('/api/products', async (req, res) => {
   //find is a promise so use async/await
