@@ -1,18 +1,19 @@
 const express = require('express');
+const path = require('path');
 const mongoose = require('mongoose');
 const shortid = require('shortid');
-
 const app = express();
-//middlewares
 app.use(express.json());
 
-//initialize mongo-db
-//2 params for connect func: url, 3 15multiple keys 12-
-mongoose.connect('mongodb://localhost/react-funwear-shop', {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useUnifiedTopology: true,
-});
+//initialize mongo-db  //2 params for connect func: url, 3 15multiple keys 12-
+mongoose.connect(
+  process.env.MONGODB_URL || 'mongodb://localhost/react-funwear-shop',
+  {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true,
+  }
+);
 
 // //product model -> the model w 2 params: name of the collection in the db 2. the list of fields of the model
 const Product = mongoose.model(
@@ -42,20 +43,22 @@ app.post('/api/products', async (req, res) => {
   res.send(newProduct);
 });
 
-// //UPDATE - method
-// app.put("/api/products/:id", async(req, res) =>{
-//   const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, {new: true})
-//   res.json(updatedProduct)
-// })
+//UPDATE - method
+app.put('/api/products/:id', async (req, res) => {
+  const updatedProduct = await Product.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
+  res.json(updatedProduct);
+});
 
 //DELETE  using :id as placeholder
 app.delete('/api/products/:id', async (req, res) => {
   const deletedProduct = await Product.findByIdAndDelete(req.params.id);
   res.send(deletedProduct);
 });
-
 //~~~~~~~~ O R D E R   MODEL ~~~~~~~
-
 const Order = mongoose.model(
   'order',
   new mongoose.Schema(
@@ -83,7 +86,7 @@ const Order = mongoose.model(
     }
   )
 );
-
+//POST method
 app.post('/api/orders', async (req, res) => {
   //insure that all required fields exists!!!
   if (
@@ -99,6 +102,13 @@ app.post('/api/orders', async (req, res) => {
     res.send(newOrder);
   }
 });
+
+//render static file inside build folder -
+//build will be statically in this
+app.use('/', express.static(path.join(__dirname, 'build')));
+app.get('*', (req, res) =>
+  res.sendFile(path.join(__dirname, 'build/index.html'))
+);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

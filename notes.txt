@@ -11,3 +11,5 @@ backend deps : {
 git remote add origin https://github.com/fariba-Dk/funwear-front-end.git
 
 git push -u origin main
+
+lsof -i tcp:5000

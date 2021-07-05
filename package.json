@@ -6,7 +6,8 @@
   "scripts": {
     "server": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "node server.js",
+    "deploy": "bash deploy.sh"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   "homepage": "https://github.com/fariba-Dk/funwear-back-end#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "http-proxy-middleware": "^2.0.0",
     "mongoose": "^5.12.14",
     "nodemon": "^2.0.7",
     "shortid": "^2.2.16"
